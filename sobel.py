@@ -4,7 +4,13 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-correct_image = cv2.imread("IMGRAY_1235.png")
+image_path = input("Enter the image file path: ")   #take user input for file
+correct_image = cv2.imread(image_path)
+if correct_image is None:
+    print("Error: The provided file is not a valid image or does not exist.")
+    exit()
+else:
+    print("Image loaded successfully!")
 
 def pass_filter(img, filter1):
     new_image = np.zeros(np.shape(img), dtype=np.int64) # create new black image
