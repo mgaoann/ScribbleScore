@@ -20,10 +20,10 @@ def pass_filter(img, filter1):
                                                                     # Loop for every...
     for y in range(size_offset, img.shape[0] - size_offset):        # row
         for x in range(size_offset, img.shape[1] - size_offset):    # pixel in row
-            for c in range(img.shape[2]):                           # color in pixel
+            #for c in range(img.shape[2]):                           # color in pixel
 
-                channel_subset = img[y-size_offset : y+size_offset+1, x-size_offset : x+size_offset+1, c]
-                new_image[y][x][c] = int(np.sum(np.multiply(filter1, channel_subset)))
+                channel_subset = img[y-size_offset : y+size_offset+1, x-size_offset : x+size_offset+1]
+                new_image[y][x] = int(np.sum(np.multiply(filter1, channel_subset)))
     return new_image
 
 def normal(img):    #normalize image, make it good to look at
@@ -32,7 +32,16 @@ def normal(img):    #normalize image, make it good to look at
     if (maxval != 0):
         img = ((img - minval) / maxval)
     return img
-
+def curve(img):        #increase contrast, gets rid of noise
+    for y in range(img.shape[0]):        # row
+        for x in range(img.shape[1]):    # pixel in row
+            if(img[y][x] < 64):
+                img[y][x] = 0
+            elif (img[y][x] > 192):
+                img[y][x] = 255
+            else:
+                img[y][x] = min(img[y][x] * 2 - 128, 255)
+    return img/255
 def sobel(img):
     sobel_y = np.array([[  1,  2,  1],\
                         [  0,  0,  0],\
@@ -46,32 +55,3 @@ def sobel(img):
     yimg = pass_filter(img, sobel_x)
     outimg = np.sqrt(ximg*ximg + yimg*yimg)
     return outimg
-
-# Create a figure with 1 row and 3 columns
-# plt.figure(figsize=(12, 4))
-
-# # First subplot - Sobel Y
-# plt.subplot(1, 3, 1)
-# plt.title("Sobel X")
-# plt.imshow(normal(ximg), cmap="gray")
-# plt.axis("off")
-
-# # Second subplot - Sobel X
-# plt.subplot(1, 3, 2)
-# plt.title("Sobel Y")
-# plt.imshow(normal(yimg), cmap="gray")
-# plt.axis("off")
-
-# # Third subplot - Combined Edge Detection
-# plt.subplot(1, 3, 3)
-# plt.title("Sobel Edge Detection")
-# plt.imshow(normal(sobel(correct_image)), cmap="gray")
-# plt.axis("off")
-
-# plt.title("Sobel Edge Detection")
-# plt.imshow(normal(sobel(correct_image)), cmap="gray")
-# plt.axis("off")
-
-# # Show all subplots
-# plt.tight_layout()
-# plt.show()
